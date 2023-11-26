@@ -4,8 +4,19 @@
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1>User, welcome spring boot security page!</h1>
+<div>ID:</div>
+<p style="color:rebeccapurple" th:text="${user.id}"></p>
+
+<div>username:</div>
+<p style="color:rebeccapurple" th:text="${user.username}"></p>
+
+<div>password:</div>
+<p style="color:rebeccapurple" th:text="${user.password}"></p>
+
+<div>email:</div>
+<p style="color:rebeccapurple" th:text="${user.email}"></p>
 
 
+<a href="/logout">Logout</a>
 </body>
 </html>

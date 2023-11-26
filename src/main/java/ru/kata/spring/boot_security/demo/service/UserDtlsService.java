@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.Collections;
@@ -19,8 +18,6 @@ import java.util.Optional;
 public class UserDtlsService implements UserDetailsService {
     private UserRepository userRepository;
 
-    private RoleRepository roleRepository;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
@@ -29,9 +26,7 @@ public class UserDtlsService implements UserDetailsService {
     }
 
     @Autowired
-    public UserDtlsService(RoleRepository roleRepository,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.roleRepository = roleRepository;
+    public UserDtlsService(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -77,7 +72,4 @@ public class UserDtlsService implements UserDetailsService {
         }
     }
 
-    public BCryptPasswordEncoder getbCryptPasswordEncoder() {
-        return bCryptPasswordEncoder;
-    }
 }

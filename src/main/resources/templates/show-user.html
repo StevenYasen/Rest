@@ -20,7 +20,9 @@
 <form style="display:inline-block" th:method="DELETE" th:action="'/admin/deleteUser?id='+${user.Id}">
   <input type="submit" value="Delete user"/>
 </form>
-<input style="color:black; display:inline-block" type="button" value="Cancel" onclick="window.location.href='/admin/users'">
-<a href="/logout">Logout</a>
+<input style="color:black; display:inline-block" type="button" value="Cancel" onclick="window.location.href='/admin/'">
+<div>
+  <input style="color:black;" type="button" value="Logout" onclick="window.location.href='/logout'">
+</div>
 </body>
 </html>

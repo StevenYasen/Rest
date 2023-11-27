@@ -10,6 +10,9 @@
     <input type="text" th:field="*{id}" id="id" placeholder="id" hidden="hidden">
   </div>
   <div>
+    <input type="text" th:field="*{roles}" id="roles" placeholder="roles" hidden="hidden">
+  </div>
+  <div>
     <input type="text" th:field="*{password}" id="password" placeholder="password" hidden="hidden">
   </div>
   <div>
@@ -21,9 +24,11 @@
   </div>
   <div>
     <input type="submit" value="update">
-    <a href="/users"><input type="button" value="Cancel"></a>
+    <a href="/admin/"><input type="button" value="Cancel"></a>
   </div>
 </form>
-<a href="/logout">Logout</a>
+<div>
+  <input style="color:black;" type="button" value="Logout" onclick="window.location.href='/logout'">
+</div>
 </body>
 </html>

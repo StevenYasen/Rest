@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Spring Security Example</title>
 </head>
@@ -10,13 +11,11 @@
 <div>username:</div>
 <p style="color:rebeccapurple" th:text="${user.username}"></p>
 
-<div>password:</div>
-<p style="color:rebeccapurple" th:text="${user.password}"></p>
-
 <div>email:</div>
 <p style="color:rebeccapurple" th:text="${user.email}"></p>
 
-
-<a href="/logout">Logout</a>
+<div>
+    <input style="color:black;" type="button" value="Logout" onclick="window.location.href='/logout'">
+</div>
 </body>
 </html>

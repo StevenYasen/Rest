@@ -1,12 +1,13 @@
 package ru.kata.spring.boot_security.demo.entity;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Entity
 @Table(name="users")
@@ -14,11 +15,23 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
+    @NotNull
     private String username;
+    @Column
+    @NotNull
     private String lastname;
+    @Column
+    @NotNull
     private String email;
+    @Column
+    @NotNull
     private String password;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
     public User() {
     }
@@ -61,8 +74,8 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Set<? extends SimpleGrantedAuthority> getAuthorities() {
-        return getRoles().stream().map(auth->new SimpleGrantedAuthority(auth.getAuthority())).collect(Collectors.toSet());
+    public Set<Role> getAuthorities() {
+        return getRoles();
     }
 
     @Override

@@ -23,6 +23,15 @@
         <input type="text" th:field="*{email}" id="email" placeholder="email">
     </div>
     <div>
+    <label for="roles">Roles:</label>
+    <select id="roles" th:field="*{roles}" size="3" multiple="multiple">
+        <option th:each="oneRole : ${allRoles}"
+                th:value="${{oneRole}}"
+                th:text="${oneRole.getName()}">
+        </option>
+    </select>
+    </div>
+    <div>
         <input type="submit" value="Add user">
         <input style="color:black; display:inline-block" type="button" value="Cancel" onclick="window.location.href='/admin/'">
     </div>

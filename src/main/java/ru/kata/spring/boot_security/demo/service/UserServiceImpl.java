@@ -4,14 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,20 +16,18 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
-        user.getAuthorities();
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
@@ -42,7 +37,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User findUserById(Long userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
+        return userFromDb.orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
@@ -57,8 +52,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userFromDB != null) {
             return;
         }
-        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 

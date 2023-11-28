@@ -12,6 +12,7 @@
     <tr>
         <th>id</th>
         <th>username</th>
+        <th>lastname</th>
         <th>email</th>
     </tr>
     </thead>
@@ -19,6 +20,7 @@
     <tr th:each="user: ${allUsers}">
         <td><a th:href="'/admin/user?id='+${user.id}" th:text="${user.id}"/></td>
         <td><a th:href="'/admin/user?id='+${user.id}" th:text="${user.username}"/></td>
+        <td><a th:href="'/admin/user?id='+${user.id}" th:text="${user.lastname}"/></td>
         <td><a th:href="'/admin/user?id='+${user.id}" th:text="${user.email}"/></td>
 
     </tr>

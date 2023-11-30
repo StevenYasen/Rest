@@ -34,9 +34,13 @@
 
         <div class="col-md-2" style="padding-left: 0px; padding-right: 0px">
             <div class="container-fluid" style="padding-left: 0px; padding-right: 0px">
-                <ul class="nav nav-pills nav-stacked" role="tablist">
-                    <li class="active"><a th:href="@{/admin}">Admin</a></li>
-                    <li><a th:href="@{/user}">User</a></li>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/admin}">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/user}">User</a>
+                    </li>
                 </ul>
             </div>
         </div>

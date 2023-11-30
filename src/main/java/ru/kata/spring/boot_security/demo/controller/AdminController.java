@@ -8,6 +8,8 @@ import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -21,47 +23,56 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String userList(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
+        model.addAttribute("allRoles", roleService.getAllRoles());
+        model.addAttribute("newUser", new User());
         return "users";
     }
 
-    @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestParam("id") Long userId) {
+    @DeleteMapping("/deleteUser/{id}")
+    public String deleteUser(@PathVariable("id") Long userId) {
         userService.deleteUser(userId);
-        return "redirect:/admin/";
+        return "redirect:/admin";
     }
 
     @GetMapping("/addNewUser")
     public String addNewUser(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("allRoles", roleService.getAllRoles());
-        return "user-info";
+        model.addAttribute("allUsers", userService.allUsers());
+        return "redirect:/admin";
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@ModelAttribute("newUser") User user, Model model) {
         userService.saveUser(user);
-        return "redirect:/admin/";
+        model.addAttribute("allUsers", userService.allUsers());
+        return "redirect:/admin";
     }
 
     @GetMapping("/user")
     public String showUser(@RequestParam("id") Long userId, Model model) {
         model.addAttribute("user", userService.findUserById(userId));
-        return "show-user";
+        model.addAttribute("allUsers", userService.allUsers());
+        return "redirect:/admin";
     }
 
     @GetMapping("/edit")
     public String editUser(@RequestParam("id") Long userId, Model model) {
         model.addAttribute("theUser", userService.findUserById(userId));
         model.addAttribute("allRoles", roleService.getAllRoles());
-        return "update-user";
+        model.addAttribute("allUsers", userService.allUsers());
+        return "redirect:/admin";
     }
 
-    @PatchMapping("/updateUser")
-    public String updateUser(@ModelAttribute("user") User user) {
-        userService.updateUser(user);
-        return "redirect:/admin/";
+    @PatchMapping("/updateUser/{id}")
+    public String updateUser(@ModelAttribute("user") User user,
+                             @PathVariable("id") Long id,
+                             Model model) {
+        userService.updateUser(id, user);
+        model.addAttribute("allUsers", userService.allUsers());
+        return "redirect:/admin";
     }
 }

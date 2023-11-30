@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +42,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
     public List<User> allUsers() {
         return userRepository.findAll();
     }
@@ -58,9 +64,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void updateUser(Long id,User user) {
-        user.setId(id);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void updateUser(Long id, User user) {
+        User userFromDb = userRepository.findByUsername(user.getUsername());
+        if (!user.getPassword().equals(userFromDb.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
     }
 

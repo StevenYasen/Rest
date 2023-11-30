@@ -10,13 +10,32 @@
 </head>
 <body>
 
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid" style="background-color: #282828">
+        <h4>
+            <form class="navbar-form navbar-left">
+                <strong><span style="color: white" th:text="${curUser.email}">VALUE</span></strong>
+                <span style="color: white" th:text="${' with roles: '}">VALUE</span>
+                <span style="color: white" th:each="role:${curUser.roles}">
+                    <span style="color: white" th:text="${role.toString()}">VALUE</span>
+                </span>
+            </form>
+        </h4>
+        <ul class="nav navbar-nav navbar-right">
+            <form action="/logout">
+                <button style="color: gray" type="submit" class="btn btn-link">Logout</button>
+            </form>
+        </ul>
+    </div>
+</nav>
+
 <div class="container-fluid">
     <div class="row">
 
         <div class="col-md-2" style="padding-left: 0px; padding-right: 0px">
             <div class="container-fluid" style="padding-left: 0px; padding-right: 0px">
                 <ul class="nav nav-pills nav-stacked" role="tablist">
-                    <li class="active"><a href="users.html">Admin</a></li>
+                    <li class="active"><a th:href="@{/admin}">Admin</a></li>
                     <li><a th:href="@{/user}">User</a></li>
                 </ul>
             </div>
@@ -66,8 +85,88 @@
                                                 <span th:text="${userRole.toString()}"></span>
                                             </th:block>
                                         </td>
-                                        <td>
 
+                                        <td>
+                                            <button class="btn btn-info" data-toggle="modal"
+                                                    th:data-target="${'#myEdit'+ user.id}">Edit
+                                            </button>
+                                            <div th:id="${'myEdit' + user.id}" class="modal">
+                                                <form role="form" class="form-horizontal"
+                                                      th:method="PATCH"
+                                                      th:action="@{/admin/updateUser/{id}(id=${user.id})}"
+                                                      th:object="${user}">
+                                                    <div class="modal-dialog modal-md">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button class="close" data-dismiss="modal">x</button>
+                                                                <h4 class="modal-title">Edit user</h4>
+                                                            </div>
+                                                            <div class="modal-body text-center">
+                                                                <div class="row">
+                                                                    <div class="col-md-4 col-md-offset-4">
+
+                                                                        <div class="form-group">
+                                                                            <label for="id"
+                                                                                   class="control-label">ID</label>
+                                                                            <input type="text" class="form-control"
+                                                                                   disabled="true" th:value="${user.id}"
+                                                                                   id="id"/>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="username" class="control-label">Username</label>
+                                                                            <input type="text" class="form-control"
+                                                                                   th:value="${user.username}"
+                                                                                   th:name="username" id="username"/>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="lastname"
+                                                                                   class="control-label">Name</label>
+                                                                            <input type="text" class="form-control"
+                                                                                   th:value="${user.lastname}"
+                                                                                   th:name="lastname" id="lastname"/>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="email" class="control-label">Email</label>
+                                                                            <input type="text" class="form-control"
+                                                                                   th:value="${user.email}"
+                                                                                   th:name="email" id="email"/>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="password" class="control-label">Password</label>
+                                                                            <input type="password" class="form-control"
+                                                                                   th:value="${user.password}"
+                                                                                   th:name="password" id="password">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="roles">Role</label>
+                                                                            <select class="form-control form-control-static"
+                                                                                    size="3" multiple name="roles"
+                                                                                    th:name="roles" id="roles">
+                                                                                <option th:each="role : ${allRoles}"
+                                                                                        th:value="${role.id}"
+                                                                                        th:text="${role.toString()}">
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        style="background-color: gray; color: white"
+                                                                        data-dismiss="modal">Close
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Edit
+                                                                </button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </td>
+
+                                        <td>
                                             <button class="btn btn-danger" data-toggle="modal"
                                                     th:data-target="${'#myDelete'+ user.id}">Delete
                                             </button>
@@ -167,7 +266,7 @@
                                     <div class="row">
                                         <div class="col-md-4 col-md-offset-4 text-center">
                                             <div class="form-group">
-                                                <label for="usernameNew" class="control-label">Email</label>
+                                                <label for="usernameNew" class="control-label">Username</label>
                                                 <input type="text" class="form-control" th:value="${newUser.username}"
                                                        th:name="username" id="usernameNew"/>
                                             </div>

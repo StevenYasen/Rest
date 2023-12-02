@@ -152,8 +152,8 @@
                                                                                     th:name="roles" id="roles">
                                                                                 <option th:each="role : ${allRoles}"
                                                                                         th:value="${role.id}"
-                                                                                        th:text="${role.toString()}">
-                                                                                </option>
+                                                                                        th:text="${role.toString()}"
+                                                                                th:selected="${user.roles.contains(role)}">
                                                                             </select>
                                                                         </div>
                                                                     </div>

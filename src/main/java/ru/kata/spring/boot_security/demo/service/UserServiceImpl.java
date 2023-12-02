@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
+        User userFromDB = userRepository.findByEmail(user.getUsername());
         if (userFromDB != null) {
             return;
         }
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void updateUser(Long id, User user) {
-        User userFromDb = userRepository.findByUsername(user.getUsername());
+        User userFromDb = findUserById(id);
         if (!user.getPassword().equals(userFromDb.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }

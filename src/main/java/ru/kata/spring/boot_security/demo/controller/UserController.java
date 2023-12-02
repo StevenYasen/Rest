@@ -1,10 +1,13 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
@@ -22,8 +25,8 @@ public class UserController {
     }
 
     @GetMapping
-    public String getUserInfo(Model model, Principal principal) {
-        model.addAttribute("curUser", userService.findUserByUsername(principal.getName()));
+    public String getUserInfo(Model model, Principal principal, Authentication auth) {
+        model.addAttribute("curUser", ((UserServiceImpl)userService).loadUserByUsername(((User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getEmail()));
         return "user";
     }
 }

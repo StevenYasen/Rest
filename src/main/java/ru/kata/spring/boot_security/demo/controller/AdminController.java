@@ -1,12 +1,15 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+
 import java.security.Principal;
 
 
@@ -28,7 +31,7 @@ public class AdminController {
         model.addAttribute("allUsers", userService.allUsers());
         model.addAttribute("allRoles", roleService.getAllRoles());
         model.addAttribute("newUser", new User());
-        model.addAttribute("curUser", userService.findUserByUsername(principal.getName()));
+        model.addAttribute("curUser", ((UserServiceImpl)userService).loadUserByUsername(((User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getEmail()));
         return "users";
     }
 
@@ -45,7 +48,7 @@ public class AdminController {
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("newUser") User user, Model model) {
+    public String saveUser(@ModelAttribute("newUser") User user) {
         userService.saveUser(user);
         return "redirect:/admin";
     }

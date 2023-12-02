@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void saveUser(User user) {
-        User userFromDB = userRepository.findByEmail(user.getUsername());
+        User userFromDB = userRepository.findByEmail(user.getEmail());
         if (userFromDB != null) {
             return;
         }

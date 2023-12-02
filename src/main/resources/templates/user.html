@@ -14,10 +14,10 @@
     <div class="container-fluid" style="background-color: #282828">
         <h4>
             <form class="navbar-form navbar-left">
-                <strong><span style="color: white" th:text="${curUser.email}">VALUE</span></strong>
-                <span style="color: white" th:text="${' with roles: '}">VALUE</span>
+                <strong><span style="color: white" th:text="${curUser.email}"></span></strong>
+                <span style="color: white" th:text="${' with roles: '}"></span>
                 <span style="color: white" th:each="role:${curUser.roles}">
-                    <span style="color: white" th:text="${role.toString()}">VALUE</span>
+                    <span style="color: white" th:text="${role.toString()}"></span>
                 </span>
             </form>
         </h4>

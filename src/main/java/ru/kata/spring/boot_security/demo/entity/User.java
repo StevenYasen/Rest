@@ -21,7 +21,7 @@ public class User implements UserDetails {
     @Column
     @NotNull
     private String lastname;
-    @Column
+    @Column(unique = true)
     @NotNull
     private String email;
     @Column

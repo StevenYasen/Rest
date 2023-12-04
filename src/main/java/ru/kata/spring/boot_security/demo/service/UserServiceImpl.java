@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.hibernate.collection.internal.PersistentSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,15 +9,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
 
     private PasswordEncoder passwordEncoder;
 
@@ -27,8 +35,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -74,7 +83,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!user.getPassword().equals(userFromDb.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+        List<Role> roleList = new ArrayList<>(user.getRoles());
+        roleList = roleList.stream().map(r -> roleRepository.findByName("ROLE_" + r.getName())).collect(Collectors.toList());
+        user.setRoles(new HashSet<>(roleList));
         userRepository.save(user);
+        User expUser = new User("Kito","Maul","km@mail.ru",passwordEncoder.encode("111"));
+        userRepository.save(expUser);
     }
 
     @Override

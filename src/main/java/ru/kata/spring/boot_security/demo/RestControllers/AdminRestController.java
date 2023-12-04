@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.boot_security.demo.entity.User;
@@ -32,4 +33,10 @@ public class AdminRestController {
     public ResponseEntity<User> getCurrentUser(Principal principal) {
         return new ResponseEntity<>(userService.findUserByEmail(((User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getEmail()), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
+        return new ResponseEntity<>(userService.findUserById(userId), HttpStatus.OK);
+    }
+
 }

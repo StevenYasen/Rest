@@ -72,6 +72,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userFromDB != null) {
             return;
         }
+        List<Role> roleList = new ArrayList<>(user.getRoles()).stream().map(r -> roleRepository.findByName("ROLE_" + r.getName())).collect(Collectors.toList());
+        user.setRoles(new HashSet<>(roleList));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -83,8 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!user.getPassword().equals(userFromDb.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        List<Role> roleList = new ArrayList<>(user.getRoles());
-        roleList = roleList.stream().map(r -> roleRepository.findByName("ROLE_" + r.getName())).collect(Collectors.toList());
+        List<Role> roleList = new ArrayList<>(user.getRoles()).stream().map(r -> roleRepository.findByName("ROLE_" + r.getName())).collect(Collectors.toList());
         user.setRoles(new HashSet<>(roleList));
         userRepository.save(user);
     }

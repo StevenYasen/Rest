@@ -47,4 +47,10 @@ public class AdminRestController {
         userService.deleteUser(userId);
         return new ResponseEntity<>(userId, HttpStatus.OK);
     }
+
+    @PostMapping
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        userService.saveUser(user);
+        return new ResponseEntity<>(userService.findUserByEmail(user.getEmail()), HttpStatus.OK);
+    }
 }

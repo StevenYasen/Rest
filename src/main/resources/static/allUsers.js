@@ -11,14 +11,14 @@ function showAll() {
                 tr = document.createElement('tr');
                 tr.setAttribute("id", `user${users[i].id}`)
                 tr.innerHTML = `
-        <td>${users[i].id}</td>
-        <td>${users[i].username}</td>
-        <td>${users[i].lastname}</td>
-        <td>${users[i].email}</td>            
-        <td>${users[i].roles.map(role => " " + role.name.substring(5))}</td>
-        <td><button class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick="getUserFieldsForEditModal(${users[i].id})">Edit</button></td>
-        <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="getUserFieldsForDelModal(${users[i].id})">Delete</button></td>                                
-    `;
+                    <td>${users[i].id}</td>
+                    <td>${users[i].username}</td>
+                    <td>${users[i].lastname}</td>
+                    <td>${users[i].email}</td>            
+                    <td>${users[i].roles.map(role => " " + role.name.substring(5))}</td>
+                    <td><button class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick="getUserFieldsForEditModal(${users[i].id})">Edit</button></td>
+                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="getUserFieldsForDelModal(${users[i].id})">Delete</button></td>                                
+                `;
                 tablebody.append(tr);
             }
 
@@ -120,4 +120,42 @@ deleteForm.addEventListener('submit', delUserListener => {
 });
 
 //Для добавления пользователя
+let addForm = document.getElementById("addNewUser")
+addForm.addEventListener("submit", newUserEventListener=>{
+    newUserEventListener.preventDefault();
+    let addUserRoles = [];
+    let markedRoles = addForm.rolesNew.selectedOptions;
+    for (let i = 0; i < markedRoles.length; i++) {
+        addUserRoles.push({name: markedRoles[i].textContent});
+    }
+    let bodyInfo = JSON.stringify({
+        username: addForm.usernameNew.value,
+        lastname: addForm.lastnameNew.value,
+        password: addForm.passwordNew.value,
+        email: addForm.emailNew.value,
+        roles: addUserRoles
+    });
+    let reqToAdd = {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: bodyInfo
+    };
+    fetch("/api/admin", reqToAdd)
+        .then(resp=>resp.json())
+        .then(newUser=>{
+           let tr = document.createElement('tr');
+            tr.setAttribute("id", `user${newUser.id}`)
+            tr.innerHTML = `
+                    <td>${newUser.id}</td>
+                    <td>${newUser.username}</td>
+                    <td>${newUser.lastname}</td>
+                    <td>${newUser.email}</td>            
+                    <td>${newUser.roles.map(role => " " + role.name.substring(5))}</td>
+                    <td><button class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick="getUserFieldsForEditModal(${newUser.id})">Edit</button></td>
+                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="getUserFieldsForDelModal(${newUser.id})">Delete</button></td>                                
+                `;
+            tablebody.append(tr);
+            document.getElementById("adminClick").click();
+        });
 
+});

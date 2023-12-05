@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -21,18 +22,11 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
-
-    private UserService userService;
-
-
+    private final UserDetailsService userDetailsService;
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    @Autowired
-    public WebSecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public WebSecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler, UserDetailsService userDetailsService) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -40,9 +34,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/resources/**","/api/user","/api/user/**").permitAll()
-                .antMatchers("/user", "user/**").hasRole("USER")
-                .antMatchers("/admin/**","/api/admin","/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/resources/**", "/user", "user/**", "/api/user", "/api/user/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/admin/**", "/api/admin", "/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -66,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected AuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
-        daoAuthenticationProvider.setUserDetailsService((UserServiceImpl) userService);
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
     }
 

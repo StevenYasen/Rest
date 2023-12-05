@@ -87,8 +87,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         roleList = roleList.stream().map(r -> roleRepository.findByName("ROLE_" + r.getName())).collect(Collectors.toList());
         user.setRoles(new HashSet<>(roleList));
         userRepository.save(user);
-        User expUser = new User("Kito","Maul","km@mail.ru",passwordEncoder.encode("111"));
-        userRepository.save(expUser);
     }
 
     @Override

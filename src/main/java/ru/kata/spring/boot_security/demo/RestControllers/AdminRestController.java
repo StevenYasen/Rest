@@ -40,7 +40,6 @@ public class AdminRestController {
     public ResponseEntity<HttpStatus> updateUser(@RequestBody User user){
         userService.updateUser(user.getId(), user);
         return ResponseEntity.ok(HttpStatus.OK);
-
     }
 
 }

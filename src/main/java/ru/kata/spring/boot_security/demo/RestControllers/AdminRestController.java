@@ -37,9 +37,14 @@ public class AdminRestController {
     }
 
     @PatchMapping
-    public ResponseEntity<HttpStatus> updateUser(@RequestBody User user){
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.updateUser(user.getId(), user);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>(userService.findUserById(user.getId()), HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<Long> updateUser(@RequestBody Long userId) {
+        userService.deleteUser(userId);
+        return new ResponseEntity<>(userId, HttpStatus.OK);
+    }
 }

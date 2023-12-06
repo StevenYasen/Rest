@@ -1,27 +1,58 @@
 let tablebody = document.getElementById("tbody");
 let user_roles = document.getElementById('rls');
+let admin_roles_tumbler = document.getElementById('adminTumbler');
+
 showAll();
 
 function showAll() {
-    fetch("/api/admin/users")
-        .then(response => response.json())
-        .then(users => {
-            let tr;
-            for (let i = 0; i < users.length; i++) {
-                tr = document.createElement('tr');
-                tr.setAttribute("id", `user${users[i].id}`)
-                tr.innerHTML = `
-                    <td>${users[i].id}</td>
-                    <td>${users[i].username}</td>
-                    <td>${users[i].lastname}</td>
-                    <td>${users[i].email}</td>            
-                    <td>${users[i].roles.map(role => " " + role.name.substring(5))}</td>
-                    <td><button class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick="getUserFieldsForEditModal(${users[i].id})">Edit</button></td>
-                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="getUserFieldsForDelModal(${users[i].id})">Delete</button></td>                                
-                `;
-                tablebody.append(tr);
+    fetch("/api/admin/roles")
+        .then(resp => resp.json())
+        .then(roles => {
+            let appendix = ``;
+            let node_id;
+            let node_href;
+            let node_val;
+            let h_light;
+            let a_node_id
+            for (let i = 0; i < roles.length; i++) {
+                if (roles[i].name.indexOf("ADMIN") !== -1) {
+                    node_id = 'id="admin"';
+                    node_href = 'href="/admin/users"';
+                    node_val = "Admin";
+                    h_light = "active";
+                    a_node_id = 'id="adminClick"';
+                } else {
+                    node_id = '';
+                    node_href = 'href="/user"';
+                    node_val = "User";
+                    h_light = "";
+                    a_node_id = "";
+                }
+                appendix += `<li ${node_id} class="nav-item">
+                            <a ${a_node_id} class="nav-link ${h_light}" ${node_href}>${node_val}</a>
+                        </li>`;
             }
+            admin_roles_tumbler.innerHTML = appendix;
 
+            fetch("/api/admin/users")
+                .then(response => response.json())
+                .then(users => {
+                    let tr;
+                    for (let i = 0; i < users.length; i++) {
+                        tr = document.createElement('tr');
+                        tr.setAttribute("id", `user${users[i].id}`)
+                        tr.innerHTML = `
+                            <td>${users[i].id}</td>
+                            <td>${users[i].username}</td>
+                            <td>${users[i].lastname}</td>
+                            <td>${users[i].email}</td>            
+                            <td>${users[i].roles.map(role => " " + role.name.substring(5))}</td>
+                            <td><button class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick="getUserFieldsForEditModal(${users[i].id})">Edit</button></td>
+                            <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="getUserFieldsForDelModal(${users[i].id})">Delete</button></td>                                
+                        `;
+                        tablebody.append(tr);
+                    }
+                });
         });
 
 
@@ -49,21 +80,7 @@ function getUserFieldsForEditModal(id) {
             editForm.lastnameEdit.value = user.lastname;
             editForm.passwordEdit.value = user.password;
             editForm.emailEdit.value = user.email;
-
-            fetch("/api/admin/roles")
-                .then(resp => resp.json())
-                .then(roles => {
-                    let selectEdit = document.getElementById("rolesEdit")
-                    let appendix = ``;
-                    let checkRoles;
-                    let highLight;
-                    for (let i = 0; i < roles.length; i++) {
-                        checkRoles = user.roles.map(r => r.name + "/").toString().indexOf(roles[i].name) !== -1;
-                        highLight = checkRoles ? "selected" : "";
-                            appendix += `<option value="${i + 1}" ${highLight}>${roles[i].name.substring(5)}</option>`
-                    }
-                    selectEdit.innerHTML = appendix;
-                });
+            setOptionRoles("rolesEdit", true, user.roles);
         });
 }
 
@@ -115,6 +132,7 @@ function getUserFieldsForDelModal(id) {
             deleteForm.usernameDel.value = user.username;
             deleteForm.lastnameDel.value = user.lastname;
             deleteForm.emailDelete.value = user.email;
+            setOptionRoles("rolesDelete", true, user.roles);
         });
 }
 
@@ -136,6 +154,18 @@ deleteForm.addEventListener('submit', delUserListener => {
 
 //Для добавления пользователя
 let addForm = document.getElementById("addNewUser")
+
+fetch("/api/admin/roles")
+    .then(resp => resp.json())
+    .then(roles => {
+        let selectEdit = document.getElementById("rolesNew");
+        let appendix = ``;
+        for (let i = 0; i < roles.length; i++) {
+            appendix += `<option value="${i + 1}">${roles[i].name.substring(5)}</option>`
+        }
+        selectEdit.innerHTML = appendix;
+    });
+
 addForm.addEventListener("submit", newUserEventListener => {
     newUserEventListener.preventDefault();
     let addUserRoles = [];

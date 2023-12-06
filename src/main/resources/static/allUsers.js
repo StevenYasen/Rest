@@ -49,6 +49,21 @@ function getUserFieldsForEditModal(id) {
             editForm.lastnameEdit.value = user.lastname;
             editForm.passwordEdit.value = user.password;
             editForm.emailEdit.value = user.email;
+
+            fetch("/api/admin/roles")
+                .then(resp => resp.json())
+                .then(roles => {
+                    let selectEdit = document.getElementById("rolesEdit")
+                    let appendix = ``;
+                    let checkRoles;
+                    let highLight;
+                    for (let i = 0; i < roles.length; i++) {
+                        checkRoles = user.roles.map(r => r.name + "/").toString().indexOf(roles[i].name) !== -1;
+                        highLight = checkRoles ? "selected" : "";
+                            appendix += `<option value="${i + 1}" ${highLight}>${roles[i].name.substring(5)}</option>`
+                    }
+                    selectEdit.innerHTML = appendix;
+                });
         });
 }
 
@@ -121,7 +136,7 @@ deleteForm.addEventListener('submit', delUserListener => {
 
 //Для добавления пользователя
 let addForm = document.getElementById("addNewUser")
-addForm.addEventListener("submit", newUserEventListener=>{
+addForm.addEventListener("submit", newUserEventListener => {
     newUserEventListener.preventDefault();
     let addUserRoles = [];
     let markedRoles = addForm.rolesNew.selectedOptions;
@@ -141,9 +156,9 @@ addForm.addEventListener("submit", newUserEventListener=>{
         body: bodyInfo
     };
     fetch("/api/admin", reqToAdd)
-        .then(resp=>resp.json())
-        .then(newUser=>{
-           let tr = document.createElement('tr');
+        .then(resp => resp.json())
+        .then(newUser => {
+            let tr = document.createElement('tr');
             tr.setAttribute("id", `user${newUser.id}`)
             tr.innerHTML = `
                     <td>${newUser.id}</td>
